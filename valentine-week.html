@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Romantic Week 💕</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Floating Hearts Animation */
+        .heart-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            color: rgba(255, 182, 193, 0.6);
+            animation: float-up 8s linear infinite;
+            font-size: 20px;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff69b4;
+            }
+            to {
+                text-shadow: 0 0 20px #fff, 0 0 30px #ff69b4, 0 0 40px #ff69b4;
+            }
+        }
+
+        .header p {
+            color: #fff;
+            font-size: 1.2rem;
+            font-style: italic;
+        }
+
+        /* Days Container */
+        .days-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .day-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .day-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .day-card:hover::before {
+            left: 100%;
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .day-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            color: #e91e63;
+            margin: 0;
+        }
+
+        .day-icon {
+            font-size: 2.5rem;
+        }
+
+        .day-date {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .day-description {
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .reveal-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .locked {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .locked .reveal-btn {
+            background: #ccc;
+        }
+
+        /* Modal Styles */
+        .surprise-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            animation: modalSlideIn 0.5s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: #e91e63;
+        }
+
+        .surprise-content {
+            text-align: center;
+        }
+
+        .surprise-content h2 {
+            font-family: 'Dancing Script', cursive;
+            color: #e91e63;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .surprise-image {
+            width: 100%;
+            max-width: 400px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .surprise-message {
+            color: #444;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin: 20px 0;
+        }
+
+        .love-letter {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #e91e63;
+            font-style: italic;
+            margin: 20px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .day-title {
+                font-size: 1.5rem;
+            }
+
+            .modal-content {
+                padding: 30px 20px;
+            }
+        }
+
+        /* Special Effects */
+        .sparkle {
+            display: inline-block;
+            animation: sparkle 1.5s infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Hearts Background -->
+    <div class="heart-container" id="heartContainer"></div>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>💕 Our Romantic Week 💕</h1>
+        <p>Seven Days of Love, Seven Special Surprises</p>
+    </div>
+
+    <!-- Days Container -->
+    <div class="days-container">
+        <!-- Day 1: Rose Day -->
+        <div class="day-card" data-day="1">
+            <div class="day-header">
+                <h2 class="day-title">🌹 Rose Day</h2>
+                <div class="day-icon">🌹</div>
+            </div>
+            <p class="day-date">February 7th</p>
+            <p class="day-description">
+                The beginning of our romantic journey. Every rose has a story, and ours starts here...
+            </p>
+            <button class="reveal-btn" onclick="revealSurprise(1)">
+                <i class="fas fa-gift"></i> Reveal Surprise
+            </button>
+        </div>
+
+        <!-- Day 2: Propose Day -->
+        <div class="day-card" data-day="2">
+            <div class="day-header">
+                <h2 class="day-title">💍 Propose Day</h2>
+                <div class="day-icon">💍</div>
+            </div>
+            <p class="day-date">February 8th</p>
+            <p class="day-description">
+                The day to express feelings and make promises that last forever...
+            </p>
+            <button class="reveal-btn" onclick="revealSurprise(2)">
+                <i class="fas fa-gift"></i> Reveal Surprise
+            </button>
+        </div>
+
+        <!-- Day 3: Chocolate Day -->
+        <div class="day-card" data-day="3">
+            <div class="day-header">
+                <h2 class="day-title">🍫 Chocolate Day</h2>
+                <div class="day-icon">🍫</div>
+            </div>
+            <p class="day-date">February 9th</p>
+            <p class="day-description">
+                Sweet moments deserve sweet treats. Let's celebrate our sweetness together...
+            </p>
+            <button class="reveal-btn" onclick="revealSurprise(3)">
+                <i class="fas fa-gift"></i> Reveal Surprise
+            </button>
+        </div>
+
+        <!-- Day 4: Teddy Day -->
+        <div class="day-card" data-day="4">
+            <div class="day-header">
+                <h2 class="day-title">🧸 Teddy Day</h2>
+                <div class="day-icon">🧸</div>
+            </div>
+            <p class="day-date">February 10th</p>
+            <p class="day-description">
+                A cuddly reminder of how much you mean to me, today and always...
+            </p>
+            <button class="reveal-btn" onclick="revealSurprise(4)">
+                <i class="fas fa-gift"></i> Reveal Surprise
+            </button>
+        </div>
+
+        <!-- Day 5: Promise Day -->
+        <div class="day-card" data-day="5">
+            <div class="day-header">
+                <h2 class="day-title">🤝 Promise Day</h2>
+                <div class="day-icon">🤝</div>
+            </div>
+            <p class="day-date">February 11th</p>
+            <p class="day-description">
+                Promises are meant to be kept. Here are mine to you, forever and always...
+            </p>
+            <button class="reveal-btn" onclick="revealSurprise(5)">
+                <i class="fas fa-gift"></i> Reveal Surprise
+            </button>
+        </div>
+
+        <!-- Day 6: Hug Day -->
+        <div class="day-card" data-day="6">
+            <div class="day-header">
+                <h2 class="day-title">🤗 Hug Day</h2>
+                <div class="day-icon">🤗</div>
+            </div>
+            <p class="day-date">February 12th</p>
+            <p class="day-description">
+                Sometimes words aren't enough. Let me hold you close and show you what you mean to me...
+            </p>
+            <button class="reveal-btn" onclick="revealSurprise(6)">
+                <i class="fas fa-gift"></i> Reveal Surprise
+            </button>
+        </div>
+
+        <!-- Day 7: Kiss Day -->
+        <div class="day-card" data-day="7">
+            <div class="day-header">
+                <h2 class="day-title">💋 Kiss Day</h2>
+                <div class="day-icon">💋</div>
+            </div>
+            <p class="day-date">February 13th</p>
+            <p class="day-description">
+                A kiss is worth a thousand words. Let me show you how I feel...
+            </p>
+            <button class="reveal-btn" onclick="revealSurprise(7)">
+                <i class="fas fa-gift"></i> Reveal Surprise
+            </button>
+        </div>
+
+        <!-- Day 8: Valentine's Day -->
+        <div class="day-card" data-day="8">
+            <div class="day-header">
+                <h2 class="day-title">❤️ Valentine's Day</h2>
+                <div class="day-icon">❤️</div>
+            </div>
+            <p class="day-date">February 14th</p>
+            <p class="day-description">
+                The grand finale! The day to celebrate our love in the most special way...
+            </p>
+            <button class="reveal-btn" onclick="revealSurprise(8)">
+                <i class="fas fa-gift"></i> Reveal Surprise
+            </button>
+        </div>
+    </div>
+
+    <!-- Surprise Modal -->
+    <div class="surprise-modal" id="surpriseModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="surprise-content" id="surpriseContent">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Surprise content for each day
+        const surprises = {
+            1: {
+                title: "🌹 A Garden of Roses for You 🌹",
+                message: "Just like these roses bloom with beauty, my love for you grows more beautiful each day. Each petal represents a reason why I adore you.",
+                letter: "My Dearest,<br><br>They say a rose speaks of love silently, in a language known only to the heart. Today, I gift you not just roses, but all the love they represent. You are the most beautiful flower in my garden of life. Your smile brightens my darkest days, and your presence makes every moment magical.<br><br>With all my love,<br>Always yours 💕",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23ffe6f0' width='400' height='300'/%3E%3Cg transform='translate(200 150)'%3E%3Ccircle r='50' fill='%23ff1744'/%3E%3Cpath d='M-20,-20 Q-30,-40 -15,-50 Q0,-55 15,-50 Q30,-40 20,-20 Q10,-10 0,10 Q-10,-10 -20,-20' fill='%23d50000'/%3E%3Cpath d='M20,-20 Q30,-40 45,-50 Q60,-55 75,-50 Q90,-40 80,-20 Q70,-10 60,10 Q50,-10 40,-20' fill='%23d50000' transform='rotate(60)'/%3E%3Cpath d='M20,-20 Q30,-40 45,-50 Q60,-55 75,-50 Q90,-40 80,-20 Q70,-10 60,10 Q50,-10 40,-20' fill='%23d50000' transform='rotate(120)'/%3E%3Cpath d='M20,-20 Q30,-40 45,-50 Q60,-55 75,-50 Q90,-40 80,-20 Q70,-10 60,10 Q50,-10 40,-20' fill='%23d50000' transform='rotate(180)'/%3E%3Cpath d='M20,-20 Q30,-40 45,-50 Q60,-55 75,-50 Q90,-40 80,-20 Q70,-10 60,10 Q50,-10 40,-20' fill='%23d50000' transform='rotate(240)'/%3E%3Cpath d='M20,-20 Q30,-40 45,-50 Q60,-55 75,-50 Q90,-40 80,-20 Q70,-10 60,10 Q50,-10 40,-20' fill='%23d50000' transform='rotate(300)'/%3E%3Cpath d='M-5,50 L-3,120 L3,120 L5,50' fill='%23388e3c'/%3E%3Cpath d='M3,80 Q20,85 25,70 Q20,75 3,78' fill='%234caf50'/%3E%3C/g%3E%3Ctext x='200' y='250' font-family='Dancing Script' font-size='24' fill='%23e91e63' text-anchor='middle'%3E🌹 For You, My Love 🌹%3C/text%3E%3C/svg%3E"
+            },
+            2: {
+                title: "💍 My Heart's Promise 💍",
+                message: "Today, I want to tell you what you already know - you are my forever. Will you continue to be my partner in this beautiful journey called life?",
+                letter: "My Love,<br><br>From the moment I met you, I knew my life would never be the same. You've brought joy, laughter, and endless love into my world. Today, I want to promise you that I will always cherish you, support your dreams, and stand by your side through every sunrise and sunset.<br><br>You are my today and all of my tomorrows.<br><br>Forever yours 💕",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23fff0f5' width='400' height='300'/%3E%3Cg transform='translate(200 150)'%3E%3Cellipse rx='35' ry='40' fill='%23ffd700' transform='rotate(-45)'/%3E%3Cellipse rx='8' ry='10' fill='%23ff1744' transform='translate(0 -45)'/%3E%3Crect x='-5' y='-50' width='10' height='15' fill='%23ffd700'/%3E%3Ccircle cx='0' cy='-45' r='12' fill='%23ff1744'/%3E%3Cpath d='M-8,-45 L-4,-40 L0,-45 L4,-40 L8,-45' fill='none' stroke='%23fff' stroke-width='1'/%3E%3C/g%3E%3Ctext x='200' y='230' font-family='Dancing Script' font-size='20' fill='%23e91e63' text-anchor='middle'%3EWill you be mine forever?%3C/text%3E%3Cpath d='M100,100 Q120,80 140,100 Q120,120 100,100 M260,100 Q280,80 300,100 Q280,120 260,100' fill='%23ff69b4' opacity='0.3'/%3E%3C/svg%3E"
+            },
+            3: {
+                title: "🍫 Sweet Like Chocolate 🍫",
+                message: "Life with you is sweeter than the finest chocolate. Every moment we share is a delicious memory I'll treasure forever.",
+                letter: "Sweet Love,<br><br>Just as chocolate melts on your tongue and fills you with warmth, you melt my heart and fill my life with sweetness. You make even the ordinary days extraordinary. Your laughter is sweeter than any candy, and your love is the most delicious treat I could ever ask for.<br><br>Let's keep making sweet memories together!<br><br>Your Sweetest Admirer 💕",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23f5e6d3' width='400' height='300'/%3E%3Cg transform='translate(200 150)'%3E%3Crect x='-60' y='-40' width='120' height='80' rx='10' fill='%236d4c41'/%3E%3Crect x='-55' y='-35' width='110' height='70' rx='8' fill='%238d6e63'/%3E%3Crect x='-50' y='-30' width='30' height='25' fill='%235d4037'/%3E%3Crect x='-10' y='-30' width='30' height='25' fill='%235d4037'/%3E%3Crect x='30' y='-30' width='30' height='25' fill='%235d4037'/%3E%3Crect x='-50' y='5' width='30' height='25' fill='%235d4037'/%3E%3Crect x='-10' y='5' width='30' height='25' fill='%235d4037'/%3E%3Crect x='30' y='5' width='30' height='25' fill='%235d4037'/%3E%3Cpath d='M-20,-60 L-15,-50 L-10,-60 L-5,-50 L0,-60 L5,-50 L10,-60 L15,-50 L20,-60' fill='none' stroke='%23ff69b4' stroke-width='2'/%3E%3C/g%3E%3Ctext x='200' y='240' font-family='Dancing Script' font-size='22' fill='%23e91e63' text-anchor='middle'%3E🍫 Sweet Moments with You 🍫%3C/text%3E%3C/svg%3E"
+            },
+            4: {
+                title: "🧸 A Cuddle from My Heart 🧸",
+                message: "This teddy bear represents all the hugs I want to give you. Whenever you need comfort, remember my arms are always here for you.",
+                letter: "My Cuddle Bug,<br><br>Sometimes words fall short in expressing how much I care. This teddy bear is a reminder that no matter where we are, I'm always thinking of you and wishing I could hold you close. You bring comfort to my soul and warmth to my heart.<br><br>Consider this a permanent hug from me!<br><br>Your Cuddle Partner 💕",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23ffe4e1' width='400' height='300'/%3E%3Cg transform='translate(200 150)'%3E%3Ccircle cx='-30' cy='-30' r='20' fill='%23d4a574'/%3E%3Ccircle cx='30' cy='-30' r='20' fill='%23d4a574'/%3E%3Ccircle cx='0' cy='0' r='45' fill='%23daa520'/%3E%3Ccircle cx='0' cy='30' r='35' fill='%23d4a574'/%3E%3Ccircle cx='-15' cy='-10' r='6' fill='%23000'/%3E%3Ccircle cx='15' cy='-10' r='6' fill='%23000'/%3E%3Cellipse cx='0' cy='5' rx='8' ry='6' fill='%23000'/%3E%3Cpath d='M-10,10 Q0,15 10,10' fill='none' stroke='%23000' stroke-width='2'/%3E%3Cellipse cx='-40' cy='10' rx='15' ry='25' fill='%23d4a574'/%3E%3Cellipse cx='40' cy='10' rx='15' ry='25' fill='%23d4a574'/%3E%3Cellipse cx='-25' cy='60' rx='18' ry='30' fill='%23d4a574'/%3E%3Cellipse cx='25' cy='60' rx='18' ry='30' fill='%23d4a574'/%3E%3Cpath d='M-8,-5 L-6,-3 M8,-5 L6,-3' stroke='%23fff' stroke-width='2'/%3E%3C/g%3E%3Cpath d='M80,80 Q100,60 120,80 T160,80 M240,80 Q260,60 280,80 T320,80' fill='none' stroke='%23ff69b4' stroke-width='3' opacity='0.5'/%3E%3Ctext x='200' y='260' font-family='Dancing Script' font-size='20' fill='%23e91e63' text-anchor='middle'%3E🧸 Hugs and Cuddles 🧸%3C/text%3E%3C/svg%3E"
+            },
+            5: {
+                title: "🤝 My Promises to You 🤝",
+                message: "These are not just words, but commitments from my heart that I will keep forever.",
+                letter: "My Dearest Promise,<br><br>Today, I make these promises to you:<br><br>✨ I promise to make you smile every single day<br>✨ I promise to support your dreams as if they were my own<br>✨ I promise to be your strength when you feel weak<br>✨ I promise to listen with my heart, not just my ears<br>✨ I promise to choose you, every single day<br>✨ I promise to love you more with each passing moment<br><br>These promises are my gift to you, today and forever.<br><br>Yours in promise and deed 💕",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23f0f8ff' width='400' height='300'/%3E%3Cg transform='translate(200 150)'%3E%3Cpath d='M-40,-20 L-30,-40 L-10,-30 L-20,-10 L-40,0 L-50,-20 Z' fill='%23ffb6c1' stroke='%23ff69b4' stroke-width='2'/%3E%3Cpath d='M40,-20 L30,-40 L10,-30 L20,-10 L40,0 L50,-20 Z' fill='%23ffb6c1' stroke='%23ff69b4' stroke-width='2'/%3E%3Cpath d='M-25,-15 L25,-15 M-20,-5 L20,-5 M-15,5 L15,5' stroke='%23ff1744' stroke-width='3'/%3E%3Ccircle cx='0' cy='30' r='25' fill='%23ffd700' stroke='%23ff8c00' stroke-width='2'/%3E%3Cpath d='M-8,25 L-3,35 L3,22 L8,32 L13,20' fill='none' stroke='%23ff1744' stroke-width='2'/%3E%3C/g%3E%3Ctext x='200' y='50' font-family='Dancing Script' font-size='28' fill='%23e91e63' text-anchor='middle'%3EMy Promises to You%3C/text%3E%3Cpath d='M50,250 Q100,240 150,250 T250,250 T350,250' fill='none' stroke='%23ff69b4' stroke-width='2' opacity='0.5'/%3E%3C/svg%3E"
+            },
+            6: {
+                title: "🤗 Virtual Hug Incoming! 🤗",
+                message: "I wish I could hold you right now. This virtual hug carries all my warmth, care, and love for you. Feel my arms around you!",
+                letter: "My Warm Embrace,<br><br>They say a hug is worth a thousand words. In your arms, I find home. In your embrace, I find peace. Your hugs have the power to make everything better, to turn my bad days into good ones, and to make me feel like the luckiest person alive.<br><br>Until I can hold you for real, accept this virtual hug filled with all my love. Imagine my arms wrapped around you, never wanting to let go.<br><br>Sending you the warmest hug 💕",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23fffacd' width='400' height='300'/%3E%3Cg transform='translate(200 150)'%3E%3Cellipse cx='0' cy='0' rx='50' ry='60' fill='%23ffc0cb'/%3E%3Ccircle cx='0' cy='-40' r='35' fill='%23ffc0cb'/%3E%3Ccircle cx='-15' cy='-45' r='5' fill='%23000'/%3E%3Ccircle cx='15' cy='-45' r='5' fill='%23000'/%3E%3Cpath d='M-10,-30 Q0,-25 10,-30' fill='none' stroke='%23000' stroke-width='2'/%3E%3Cellipse cx='-60' cy='-10' rx='25' ry='15' fill='%23ffc0cb' transform='rotate(-30 -60 -10)'/%3E%3Cellipse cx='60' cy='-10' rx='25' ry='15' fill='%23ffc0cb' transform='rotate(30 60 -10)'/%3E%3Cellipse cx='-50' cy='40' rx='20' ry='35' fill='%23ffc0cb'/%3E%3Cellipse cx='50' cy='40' rx='20' ry='35' fill='%23ffc0cb'/%3E%3Cpath d='M-70,-20 Q-60,-25 -50,-20 Q-40,-15 -30,-20' fill='none' stroke='%23ff1744' stroke-width='3'/%3E%3Cpath d='M70,-20 Q60,-25 50,-20 Q40,-15 30,-20' fill='none' stroke='%23ff1744' stroke-width='3'/%3E%3C/g%3E%3Ctext x='200' y='260' font-family='Dancing Script' font-size='24' fill='%23e91e63' text-anchor='middle'%3E🤗 Sending You Warm Hugs 🤗%3C/text%3E%3Cg transform='translate(100 80)'%3E%3Cpath d='M0,0 Q5,-5 10,0 Q5,5 0,0' fill='%23ff69b4' opacity='0.6'/%3E%3C/g%3E%3Cg transform='translate(280 100)'%3E%3Cpath d='M0,0 Q5,-5 10,0 Q5,5 0,0' fill='%23ff69b4' opacity='0.6'/%3E%3C/g%3E%3C/svg%3E"
+            },
+            7: {
+                title: "💋 Sealed with a Kiss 💋",
+                message: "Every kiss tells a story. This one says 'I love you' in the most beautiful way possible.",
+                letter: "My Sweet Kiss,<br><br>A kiss is the language of love. When words fail, when actions aren't enough, a kiss says everything that needs to be said. Each kiss we share is a promise, a connection, a moment frozen in time.<br><br>I'm sending you infinite kisses through this message - on your forehead for your dreams, on your cheeks for your smile, and on your lips for the love we share.<br><br>Can't wait to kiss you for real!<br><br>With all my love and kisses 💕",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23fff0f5' width='400' height='300'/%3E%3Cg transform='translate(200 150)'%3E%3Cpath d='M-30,-20 Q-40,-40 -25,-50 Q-10,-55 0,-45 Q10,-55 25,-50 Q40,-40 30,-20 Q20,0 0,20 Q-20,0 -30,-20 Z' fill='%23ff1744'/%3E%3Cellipse cx='-15' cy='-25' rx='8' ry='12' fill='%23ff69b4' opacity='0.6'/%3E%3Cellipse cx='15' cy='-25' rx='8' ry='12' fill='%23ff69b4' opacity='0.6'/%3E%3Cpath d='M-5,0 Q0,5 5,0' fill='%23fff' opacity='0.8'/%3E%3C/g%3E%3Cg transform='translate(100 80)'%3E%3Cpath d='M-10,-5 Q-12,-10 -8,-12 Q-4,-13 0,-10 Q4,-13 8,-12 Q12,-10 10,-5 Q7,0 0,8 Q-7,0 -10,-5 Z' fill='%23ff69b4' opacity='0.4'/%3E%3C/g%3E%3Cg transform='translate(300 100)'%3E%3Cpath d='M-10,-5 Q-12,-10 -8,-12 Q-4,-13 0,-10 Q4,-13 8,-12 Q12,-10 10,-5 Q7,0 0,8 Q-7,0 -10,-5 Z' fill='%23ff69b4' opacity='0.4'/%3E%3C/g%3E%3Cg transform='translate(120 220)'%3E%3Cpath d='M-10,-5 Q-12,-10 -8,-12 Q-4,-13 0,-10 Q4,-13 8,-12 Q12,-10 10,-5 Q7,0 0,8 Q-7,0 -10,-5 Z' fill='%23ff69b4' opacity='0.4'/%3E%3C/g%3E%3Cg transform='translate(280 200)'%3E%3Cpath d='M-10,-5 Q-12,-10 -8,-12 Q-4,-13 0,-10 Q4,-13 8,-12 Q12,-10 10,-5 Q7,0 0,8 Q-7,0 -10,-5 Z' fill='%23ff69b4' opacity='0.4'/%3E%3C/g%3E%3Ctext x='200' y='270' font-family='Dancing Script' font-size='24' fill='%23e91e63' text-anchor='middle'%3E💋 Kisses for You 💋%3C/text%3E%3C/svg%3E"
+            },
+            8: {
+                title: "❤️ Happy Valentine's Day, My Love! ❤️",
+                message: "Today is the celebration of our love. You are my Valentine today, tomorrow, and forever. Thank you for being the most amazing person in my life!",
+                letter: "My Forever Valentine,<br><br>Words cannot express how grateful I am to have you in my life. This week has been a journey through different shades of love, and you've made every single day special just by being you.<br><br>You are my best friend, my confidant, my partner in crime, and the love of my life. Every moment with you is a treasure, every laugh we share is a melody, and every day with you is a blessing.<br><br>Thank you for being MY Valentine. I love you more than all the stars in the sky, all the grains of sand on the beach, and all the moments we'll ever share together.<br><br>Here's to us, to our love, and to forever together!<br><br>Happy Valentine's Day, My Love!<br><br>Yours eternally 💕❤️💕",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23ffe4e1' width='400' height='300'/%3E%3Cg transform='translate(200 150)'%3E%3Cpath d='M-50,-30 Q-70,-60 -45,-75 Q-20,-85 0,-65 Q20,-85 45,-75 Q70,-60 50,-30 Q30,-5 0,40 Q-30,-5 -50,-30 Z' fill='%23ff1744'/%3E%3Cpath d='M-30,-35 Q-35,-45 -30,-50 Q-25,-52 -20,-48 Q-15,-52 -10,-50 Q-5,-45 -10,-35 Q-15,-28 -20,-20 Q-25,-28 -30,-35 Z' fill='%23ff69b4'/%3E%3Cpath d='M10,-35 Q5,-45 10,-50 Q15,-52 20,-48 Q25,-52 30,-50 Q35,-45 30,-35 Q25,-28 20,-20 Q15,-28 10,-35 Z' fill='%23ff69b4'/%3E%3Cellipse cx='0' cy='0' rx='15' ry='10' fill='%23fff' opacity='0.5'/%3E%3C/g%3E%3Cg transform='translate(80 80)'%3E%3Cpath d='M-15,-10 Q-20,-20 -12,-25 Q-5,-28 0,-22 Q5,-28 12,-25 Q20,-20 15,-10 Q10,-2 0,12 Q-10,-2 -15,-10 Z' fill='%23ff69b4' opacity='0.6'/%3E%3C/g%3E%3Cg transform='translate(320 100)'%3E%3Cpath d='M-15,-10 Q-20,-20 -12,-25 Q-5,-28 0,-22 Q5,-28 12,-25 Q20,-20 15,-10 Q10,-2 0,12 Q-10,-2 -15,-10 Z' fill='%23ff69b4' opacity='0.6'/%3E%3C/g%3E%3Cg transform='translate(120 240)'%3E%3Cpath d='M-15,-10 Q-20,-20 -12,-25 Q-5,-28 0,-22 Q5,-28 12,-25 Q20,-20 15,-10 Q10,-2 0,12 Q-10,-2 -15,-10 Z' fill='%23ff69b4' opacity='0.6'/%3E%3C/g%3E%3Cg transform='translate(280 230)'%3E%3Cpath d='M-15,-10 Q-20,-20 -12,-25 Q-5,-28 0,-22 Q5,-28 12,-25 Q20,-20 15,-10 Q10,-2 0,12 Q-10,-2 -15,-10 Z' fill='%23ff69b4' opacity='0.6'/%3E%3C/g%3E%3Ctext x='200' y='35' font-family='Dancing Script' font-size='32' fill='%23e91e63' text-anchor='middle'%3EHappy Valentine's Day!%3C/text%3E%3Ctext x='200' y='280' font-family='Poppins' font-size='18' fill='%23d81b60' text-anchor='middle'%3EYou Are My Forever 💕%3C/text%3E%3C/svg%3E"
+            }
+        };
+
+        // Create floating hearts
+        function createHearts() {
+            const container = document.getElementById('heartContainer');
+            const heartSymbols = ['❤️', '💕', '💖', '💗', '💝', '💓'];
+            
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                container.appendChild(heart);
+            }
+        }
+
+        // Reveal surprise function
+        function revealSurprise(day) {
+            const modal = document.getElementById('surpriseModal');
+            const content = document.getElementById('surpriseContent');
+            const surprise = surprises[day];
+            
+            content.innerHTML = `
+                <h2 class="sparkle">${surprise.title}</h2>
+                <img src="${surprise.image}" alt="Day ${day}" class="surprise-image">
+                <p class="surprise-message">${surprise.message}</p>
+                <div class="love-letter">
+                    ${surprise.letter}
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+            
+            // Add confetti effect
+            createConfetti();
+        }
+
+        // Close modal function
+        function closeModal() {
+            const modal = document.getElementById('surpriseModal');
+            modal.style.display = 'none';
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#ff1744', '#ff69b4', '#ffd700', '#ff1493', '#ff69b4'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '-10px';
+                confetti.style.opacity = '1';
+                confetti.style.zIndex = '9999';
+                confetti.style.borderRadius = '50%';
+                document.body.appendChild(confetti);
+                
+                const fall = confetti.animate([
+                    { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+                    { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                ], {
+                    duration: Math.random() * 3000 + 2000,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                });
+                
+                fall.onfinish = () => confetti.remove();
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('surpriseModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Initialize
+        createHearts();
+
+        // Add sparkle effect to titles
+        document.addEventListener('DOMContentLoaded', function() {
+            const titles = document.querySelectorAll('.day-title');
+            titles.forEach(title => {
+                title.style.cursor = 'pointer';
+            });
+        });
+    </script>
+</body>
+</html>
