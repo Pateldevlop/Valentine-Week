@@ -174,10 +174,21 @@
         .locked {
             opacity: 0.6;
             pointer-events: none;
+            position: relative;
+        }
+
+        .locked::after {
+            content: '🔒';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 3rem;
+            opacity: 0.3;
         }
 
         .locked .reveal-btn {
-            background: #ccc;
+            background: linear-gradient(135deg, #9e9e9e 0%, #757575 100%);
+            cursor: not-allowed !important;
         }
 
         /* Modal Styles */
@@ -441,6 +452,18 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Define the dates for each day (Year 2026)
+        const dayDates = {
+            1: new Date('2026-02-07'), // Rose Day
+            2: new Date('2026-02-08'), // Propose Day
+            3: new Date('2026-02-09'), // Chocolate Day
+            4: new Date('2026-02-10'), // Teddy Day
+            5: new Date('2026-02-11'), // Promise Day
+            6: new Date('2026-02-12'), // Hug Day
+            7: new Date('2026-02-13'), // Kiss Day
+            8: new Date('2026-02-14')  // Valentine's Day
+        };
+
         // Surprise content for each day
         const surprises = {
             1: {
@@ -493,6 +516,44 @@
             }
         };
 
+        // Check if a day is unlocked based on current date
+        function isDayUnlocked(day) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Reset time to midnight for accurate date comparison
+            
+            const dayDate = new Date(dayDates[day]);
+            dayDate.setHours(0, 0, 0, 0);
+            
+            // Day is unlocked if today's date is on or after the day's date
+            return today >= dayDate;
+        }
+
+        // Update UI to show locked/unlocked states
+        function updateDayStates() {
+            const dayCards = document.querySelectorAll('.day-card');
+            
+            dayCards.forEach(card => {
+                const day = parseInt(card.getAttribute('data-day'));
+                const btn = card.querySelector('.reveal-btn');
+                
+                if (!isDayUnlocked(day)) {
+                    card.classList.add('locked');
+                    btn.innerHTML = '<i class="fas fa-lock"></i> Locked - Available on ' + formatDate(dayDates[day]);
+                    btn.style.cursor = 'not-allowed';
+                } else {
+                    card.classList.remove('locked');
+                    btn.innerHTML = '<i class="fas fa-gift"></i> Reveal Surprise';
+                    btn.style.cursor = 'pointer';
+                }
+            });
+        }
+
+        // Format date for display
+        function formatDate(date) {
+            const options = { month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
         // Create floating hearts
         function createHearts() {
             const container = document.getElementById('heartContainer');
@@ -512,6 +573,12 @@
 
         // Reveal surprise function
         function revealSurprise(day) {
+            // Check if the day is unlocked
+            if (!isDayUnlocked(day)) {
+                alert('🔒 This surprise is locked! Come back on ' + formatDate(dayDates[day]) + ' to unlock it! 💕');
+                return;
+            }
+            
             const modal = document.getElementById('surpriseModal');
             const content = document.getElementById('surpriseContent');
             const surprise = surprises[day];
@@ -575,6 +642,10 @@
 
         // Initialize
         createHearts();
+        updateDayStates();
+
+        // Update day states every hour to check for newly unlocked days
+        setInterval(updateDayStates, 3600000); // Update every hour
 
         // Add sparkle effect to titles
         document.addEventListener('DOMContentLoaded', function() {
@@ -582,6 +653,9 @@
             titles.forEach(title => {
                 title.style.cursor = 'pointer';
             });
+            
+            // Update states when DOM is fully loaded
+            updateDayStates();
         });
     </script>
 </body>
